@@ -3,6 +3,7 @@
 // Finite State Machines
 // Example 1 adapted from mkelly.me/blog/phaser-finite-state-machine
 
+// DE-DANGER
 'use strict';
 
 const config = {
