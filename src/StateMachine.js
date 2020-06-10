@@ -35,6 +35,7 @@ class StateMachine {
     }
 }
 
+// parent class for all `State` subclasses
 class State {
     enter() {
 

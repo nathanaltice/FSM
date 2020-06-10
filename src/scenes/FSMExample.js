@@ -2,7 +2,8 @@ class FSMExample extends Phaser.Scene {
     constructor() {
         super("fsmexampleScene");
 
-        this.heroVelocity = 100;
+        this.heroVelocity = 100;    // in pixels
+        this.dashCooldown = 300;    // in ms
     }
 
     preload() {
@@ -22,10 +23,11 @@ class FSMExample extends Phaser.Scene {
         this.hero.direction = 'down';
 
         // state machine managing hero
-        this.stateMachine = new StateMachine('idle', {
+        this.heroFSM = new StateMachine('idle', {
             idle: new IdleState(),
             move: new MoveState(),
             swing: new SwingState(),
+            dash: new DashState(),
         }, [this, this.hero]);
 
         // animations (walking)
@@ -86,7 +88,7 @@ class FSMExample extends Phaser.Scene {
 
     update() {
         // handle hero actions
-        this.stateMachine.step();
+        this.heroFSM.step();
 
     }
 }
@@ -101,11 +103,17 @@ class IdleState extends State {
 
     execute(scene, hero) {
         // make a local copy of the keyboard object
-        const { left, right, up, down, space } = scene.keys;
+        const { left, right, up, down, space, shift } = scene.keys;
 
         // transition to swing if pressing space
         if(space.isDown) {
             this.stateMachine.transition('swing');
+            return;
+        }
+
+        // transition to dash if pressing shift
+        if(shift.isDown) {
+            this.stateMachine.transition('dash');
             return;
         }
 
@@ -120,11 +128,17 @@ class IdleState extends State {
 class MoveState extends State {
     execute(scene, hero) {
         // make a local copy of the keyboard object
-        const { left, right, up, down, space } = scene.keys;
+        const { left, right, up, down, space, shift } = scene.keys;
 
         // transition to swing if pressing space
         if(space.isDown) {
             this.stateMachine.transition('swing');
+            return;
+        }
+
+        // transition to dash if pressing shift
+        if(shift.isDown) {
+            this.stateMachine.transition('dash');
             return;
         }
 
@@ -161,6 +175,32 @@ class SwingState extends State {
         hero.setVelocity(0);
         hero.anims.play(`swing-${hero.direction}`);
         hero.once('animationcomplete', () => {
+            this.stateMachine.transition('idle');
+        });
+    }
+}
+
+class DashState extends State {
+    enter(scene, hero) {
+        hero.setVelocity(0);
+        hero.anims.play(`swing-${hero.direction}`);
+        switch(hero.direction) {
+            case 'up':
+                hero.setVelocityY(-scene.heroVelocity * 3);
+                break;
+            case 'down':
+                hero.setVelocityY(scene.heroVelocity * 3);
+                break;
+            case 'left':
+                hero.setVelocityX(-scene.heroVelocity * 3);
+                break;
+            case 'right':
+                hero.setVelocityX(scene.heroVelocity * 3);
+                break;
+        }
+
+        // set a short delay before going back to idle
+        scene.time.delayedCall(scene.dashCooldown, () => {
             this.stateMachine.transition('idle');
         });
     }
