@@ -3,6 +3,8 @@
 // Finite State Machines
 // Example 1 adapted from mkelly.me/blog/phaser-finite-state-machine
 
+// TO-DO: Refactor code into player prefab and modules
+
 // DE-DANGER
 'use strict';
 
