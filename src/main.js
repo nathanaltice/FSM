@@ -1,9 +1,7 @@
 // Nathan Altice
 // Created: 6/9/20
 // Finite State Machines
-// Example 1 adapted from mkelly.me/blog/phaser-finite-state-machine
-
-// TO-DO: Refactor code into player prefab and modules
+// CharacterFSM example adapted from mkelly.me/blog/phaser-finite-state-machine, but refactored for separate Hero prefab
 
 // DE-DANGER
 'use strict';
@@ -17,7 +15,7 @@ const config = {
     physics: {
         default: "arcade"
     },
-    scene: [ FSMExample ]
+    scene: [ CharacterFSM ]
 };
 
 // define game
