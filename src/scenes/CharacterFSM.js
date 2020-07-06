@@ -19,12 +19,13 @@ class CharacterFSM extends Phaser.Scene {
         // add new Hero to scene (scene, x, y, key, frame, direction)
         this.hero = new Hero(this, 200, 150, 'hero', 0, 'down');
 
-        // initialize state machine managing hero
+        // initialize state machine managing hero (initial state, possible states, state args[])
         this.heroFSM = new StateMachine('idle', {
             idle: new IdleState(),
             move: new MoveState(),
             swing: new SwingState(),
             dash: new DashState(),
+            hurt: new HurtState(),
         }, [this, this.hero]);
 
         // hero animations (walking)
@@ -81,6 +82,10 @@ class CharacterFSM extends Phaser.Scene {
 
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys();
+        this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+
+        // update instruction text
+        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows move, SPACE swings, SHIFT dashes, H hurts (ouch)';
     }
 
     update() {

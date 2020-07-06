@@ -1,13 +1,15 @@
 // Nathan Altice
 // Created: 6/9/20
 // Finite State Machines
-// CharacterFSM example adapted from mkelly.me/blog/phaser-finite-state-machine, but refactored for separate Hero prefab
+// CharacterFSM example adapted from mkelly.me/blog/phaser-finite-state-machine
+// refactored for Hero prefab, detangled scene code from hero code, added 'hurt' state
 
 // DE-DANGER
 'use strict';
 
 const config = {
-    type: Phaser.AUTO,
+    parent: 'phaser-game',  // for info text
+    type: Phaser.WEBGL,     // for tinting
     width: 400,
     height: 300,
     pixelArt: true,
@@ -20,5 +22,3 @@ const config = {
 
 // define game
 const game = new Phaser.Game(config);
-
-// global stuff

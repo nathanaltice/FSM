@@ -9,6 +9,7 @@ class Hero extends Phaser.Physics.Arcade.Sprite {
         this.direction = direction; 
         this.heroVelocity = 100;    // in pixels
         this.dashCooldown = 300;    // in ms
+        this.hurtTimer = 500;       // in ms
         this.body.setCollideWorldBounds(true);
     }
 }
@@ -24,9 +25,10 @@ class IdleState extends State {
     execute(scene, hero) {
         // make a local copy of the keyboard object
         const { left, right, up, down, space, shift } = scene.keys;
+        const HKey = scene.keys.HKey;
 
         // transition to swing if pressing space
-        if(space.isDown) {
+        if(Phaser.Input.Keyboard.JustDown(space)) {
             this.stateMachine.transition('swing');
             return;
         }
@@ -34,6 +36,12 @@ class IdleState extends State {
         // transition to dash if pressing shift
         if(Phaser.Input.Keyboard.JustDown(shift)) {
             this.stateMachine.transition('dash');
+            return;
+        }
+
+        // hurt if H key input (just for demo purposes)
+        if(Phaser.Input.Keyboard.JustDown(HKey)) {
+            this.stateMachine.transition('hurt');
             return;
         }
 
@@ -49,9 +57,10 @@ class MoveState extends State {
     execute(scene, hero) {
         // make a local copy of the keyboard object
         const { left, right, up, down, space, shift } = scene.keys;
+        const HKey = scene.keys.HKey;
 
         // transition to swing if pressing space
-        if(space.isDown) {
+        if(Phaser.Input.Keyboard.JustDown(space)) {
             this.stateMachine.transition('swing');
             return;
         }
@@ -59,6 +68,12 @@ class MoveState extends State {
         // transition to dash if pressing shift
         if(Phaser.Input.Keyboard.JustDown(shift)) {
             this.stateMachine.transition('dash');
+            return;
+        }
+
+        // hurt if H key input (just for demo purposes)
+        if(Phaser.Input.Keyboard.JustDown(HKey)) {
+            this.stateMachine.transition('hurt');
             return;
         }
 
@@ -121,6 +136,21 @@ class DashState extends State {
 
         // set a short delay before going back to idle
         scene.time.delayedCall(hero.dashCooldown, () => {
+            this.stateMachine.transition('idle');
+        });
+    }
+}
+
+class HurtState extends State {
+    enter(scene, hero) {
+        hero.body.setVelocity(0);
+        hero.anims.play(`walk-${hero.direction}`);
+        hero.anims.stop();
+        hero.setTint(0xFF0000);     // turn red
+
+        // set recovery timer
+        scene.time.delayedCall(hero.hurtTimer, () => {
+            hero.clearTint();
             this.stateMachine.transition('idle');
         });
     }
