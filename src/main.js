@@ -18,7 +18,7 @@ const config = {
     physics: {
         default: "arcade"
     },
-    scene: [ TextFSM, CharacterFSM ]
+    scene: [ CharacterFSM ]
 };
 
 // define game
