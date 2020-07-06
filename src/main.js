@@ -1,5 +1,6 @@
 // Nathan Altice
 // Created: 6/9/20
+// Updated: 7/5/20
 // Finite State Machines
 // CharacterFSM example adapted from mkelly.me/blog/phaser-finite-state-machine
 // refactored for Hero prefab, detangled scene code from hero code, added 'hurt' state
@@ -17,7 +18,7 @@ const config = {
     physics: {
         default: "arcade"
     },
-    scene: [ CharacterFSM ]
+    scene: [ TextFSM, CharacterFSM ]
 };
 
 // define game
