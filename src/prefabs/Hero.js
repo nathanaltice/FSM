@@ -23,7 +23,7 @@ class IdleState extends State {
     }
 
     execute(scene, hero) {
-        // make a local copy of the keyboard object
+        // use destructuring to make a local copy of the keyboard object
         const { left, right, up, down, space, shift } = scene.keys;
         const HKey = scene.keys.HKey;
 
@@ -55,7 +55,7 @@ class IdleState extends State {
 
 class MoveState extends State {
     execute(scene, hero) {
-        // make a local copy of the keyboard object
+        // use destructuring to make a local copy of the keyboard object
         const { left, right, up, down, space, shift } = scene.keys;
         const HKey = scene.keys.HKey;
 
