@@ -134,7 +134,7 @@ class DashState extends State {
                 break;
         }
 
-        // set a short delay before going back to idle
+        // set a short cooldown delay before going back to idle
         scene.time.delayedCall(hero.dashCooldown, () => {
             this.stateMachine.transition('idle');
         });
