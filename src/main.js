@@ -1,6 +1,6 @@
 // Nathan Altice
 // Created: 6/9/20
-// Updated: 4/11/21
+// Updated: 2/1/23 (Phaser 3.55)
 // Finite State Machines
 // CharacterFSM example adapted from mkelly.me/blog/phaser-finite-state-machine
 // refactored for Hero prefab, detangled scene code from hero code, added 'hurt' state
