@@ -5,19 +5,20 @@ class Hero extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);           // add Hero to existing scene
         scene.physics.add.existing(this);   // add physics body to scene
 
-        // set properties
+        this.body.setCollideWorldBounds(true);
+
+        // set custom Hero properties
         this.direction = direction; 
         this.heroVelocity = 100;    // in pixels
         this.dashCooldown = 300;    // in ms
-        this.hurtTimer = 500;       // in ms
-        this.body.setCollideWorldBounds(true);
+        this.hurtTimer = 250;       // in ms
     }
 }
 
 // hero-specific state classes
 class IdleState extends State {
     enter(scene, hero) {
-        hero.body.setVelocity(0);
+        hero.setVelocity(0);
         hero.anims.play(`walk-${hero.direction}`);
         hero.anims.stop();
     }
@@ -84,30 +85,31 @@ class MoveState extends State {
         }
 
         // handle movement
-        hero.body.setVelocity(0);
+        let moveDirection = new Phaser.Math.Vector2(0, 0);
         if(up.isDown) {
-            hero.body.setVelocityY(-hero.heroVelocity);
+            moveDirection.y = -1;
             hero.direction = 'up';
         } else if(down.isDown) {
-            hero.body.setVelocityY(hero.heroVelocity);
+            moveDirection.y = 1;
             hero.direction = 'down';
         }
         if(left.isDown) {
-            hero.body.setVelocityX(-hero.heroVelocity);
+            moveDirection.x = -1;
             hero.direction = 'left';
         } else if(right.isDown) {
-            hero.body.setVelocityX(hero.heroVelocity);
+            moveDirection.x = 1;
             hero.direction = 'right';
         }
-
-        // handle animation
+        // normalize movement vector, update hero position, and play proper animation
+        moveDirection.normalize();
+        hero.setVelocity(hero.heroVelocity * moveDirection.x, hero.heroVelocity * moveDirection.y);
         hero.anims.play(`walk-${hero.direction}`, true);
     }
 }
 
 class SwingState extends State {
     enter(scene, hero) {
-        hero.body.setVelocity(0);
+        hero.setVelocity(0);
         hero.anims.play(`swing-${hero.direction}`);
         hero.once('animationcomplete', () => {
             this.stateMachine.transition('idle');
@@ -117,25 +119,27 @@ class SwingState extends State {
 
 class DashState extends State {
     enter(scene, hero) {
-        hero.body.setVelocity(0);
+        hero.setVelocity(0);
         hero.anims.play(`swing-${hero.direction}`);
+        hero.setTint(0x00AA00);     // turn green
         switch(hero.direction) {
             case 'up':
-                hero.body.setVelocityY(-hero.heroVelocity * 3);
+                hero.setVelocityY(-hero.heroVelocity * 3);
                 break;
             case 'down':
-                hero.body.setVelocityY(hero.heroVelocity * 3);
+                hero.setVelocityY(hero.heroVelocity * 3);
                 break;
             case 'left':
-                hero.body.setVelocityX(-hero.heroVelocity * 3);
+                hero.setVelocityX(-hero.heroVelocity * 3);
                 break;
             case 'right':
-                hero.body.setVelocityX(hero.heroVelocity * 3);
+                hero.setVelocityX(hero.heroVelocity * 3);
                 break;
         }
 
         // set a short cooldown delay before going back to idle
         scene.time.delayedCall(hero.dashCooldown, () => {
+            hero.clearTint();
             this.stateMachine.transition('idle');
         });
     }
@@ -143,10 +147,25 @@ class DashState extends State {
 
 class HurtState extends State {
     enter(scene, hero) {
-        hero.body.setVelocity(0);
+        hero.setVelocity(0);
         hero.anims.play(`walk-${hero.direction}`);
         hero.anims.stop();
         hero.setTint(0xFF0000);     // turn red
+        // create knockback by sending body in direction opposite facing direction
+        switch(hero.direction) {
+            case 'up':
+                hero.setVelocityY(hero.heroVelocity*2);
+                break;
+            case 'down':
+                hero.setVelocityY(-hero.heroVelocity*2);
+                break;
+            case 'left':
+                hero.setVelocityX(hero.heroVelocity*2);
+                break;
+            case 'right':
+                hero.setVelocityX(-hero.heroVelocity*2);
+                break;
+        }
 
         // set recovery timer
         scene.time.delayedCall(hero.hurtTimer, () => {

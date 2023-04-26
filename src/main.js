@@ -3,7 +3,7 @@
 // Updated: 2/1/23 (Phaser 3.55)
 // Finite State Machines
 // CharacterFSM example adapted from mkelly.me/blog/phaser-finite-state-machine
-// refactored for Hero prefab, detangled scene code from hero code, added 'hurt' state
+// Refactored for Hero prefab, detangled scene code from hero code, added 'hurt' state
 
 // DE-DANGER
 'use strict';
@@ -21,5 +21,4 @@ const config = {
     scene: [ CharacterFSM ]
 };
 
-// define game
 const game = new Phaser.Game(config);

@@ -85,7 +85,7 @@ class CharacterFSM extends Phaser.Scene {
         this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
         // update instruction text
-        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows move, SPACE swings, SHIFT dashes, H hurts (ouch)';
+        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows: move | SPACE: attack | SHIFT: dash attack | H: hurt (knockback)';
     }
 
     update() {
