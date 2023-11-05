@@ -21,7 +21,7 @@ const config = {
             debug: true
         }
     },
-    scene: [ CharacterFSM ]
+    scene: [ Load, Play ]
 }
 
 const game = new Phaser.Game(config)

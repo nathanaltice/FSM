@@ -13,6 +13,15 @@ class Hero extends Phaser.Physics.Arcade.Sprite {
         this.heroVelocity = 100    // in pixels
         this.dashCooldown = 300    // in ms
         this.hurtTimer = 250       // in ms
+
+        // initialize state machine managing hero (initial state, possible states, state args[])
+        scene.heroFSM = new StateMachine('idle', {
+            idle: new IdleState(),
+            move: new MoveState(),
+            swing: new SwingState(),
+            dash: new DashState(),
+            hurt: new HurtState(),
+        }, [scene, this])   // pass these as arguments to maintain scene/object context in the FSM
     }
 }
 
